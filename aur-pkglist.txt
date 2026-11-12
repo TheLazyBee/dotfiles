@@ -1,0 +1,8 @@
+bibata-cursor-theme
+google-chrome
+nmrs
+ttf-ms-fonts
+visual-studio-code-bin
+yay
+yay-debug
+zscroll-git
