@@ -1,0 +1,346 @@
+/* Waybar: dark bar with colored pills.
+   Warm family (orange, amber, gold, rose) for the bar's own identity and system stats.
+   Cool family (blue, mint) only for connectivity, so those two read as "outside world".
+   Orange/amber match the Hyprland active border (ff6a00 -> ffa63d).
+   Each pill is its accent mixed into the surface color, so tint and text always match. */
+
+@define-color bg         #0b0b0e;
+@define-color surface    #16161b;
+@define-color surface-hi #25252c;
+@define-color line       #2f2f37;
+@define-color text       #ece8e3;
+@define-color muted      #85828c;
+
+@define-color orange     #ff6a00;
+@define-color amber      #ffa63d;
+@define-color gold       #ffd166;
+@define-color rose       #ff6f91;
+@define-color blue       #6aa9ff;
+@define-color mint       #4be0b0;
+@define-color danger     #ff453a;
+
+* {
+  /* `otf-font-awesome` and a Nerd Font are required for icons */
+  font-family: "JetBrainsMono Nerd Font Propo";
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 0;
+}
+
+/* Solid dark bar so it separates cleanly from whatever is on screen. */
+window#waybar {
+  background: @bg;
+  color: @text;
+  border-bottom: 2px solid alpha(@orange, 0.55);
+}
+
+.modules-left {
+  margin-left: 6px;
+}
+
+.modules-right {
+  margin-right: 6px;
+}
+
+/* ---------- Shared pill shape ---------- */
+
+#workspaces,
+#clock,
+#submap,
+#tray,
+#media,
+#cpu,
+#memory,
+#volume,
+#bluetooth,
+#network {
+  border-radius: 13px;
+  margin: 3px 3px;
+  padding: 0 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* ---------- Workspaces ---------- */
+
+#workspaces {
+  background: @surface;
+  border: 1px solid @line;
+  padding: 0 3px;
+}
+
+#workspaces button {
+  padding: 0 10px;
+  margin: 3px 2px;
+  background: transparent;
+  background-image: none;
+  border: none;
+  border-radius: 10px;
+  box-shadow: none;
+  text-shadow: none;
+  color: @muted;
+  transition: all 0.2s ease-in-out;
+}
+
+#workspaces button:hover {
+  background: @surface-hi;
+  color: @text;
+}
+
+#workspaces button.active {
+  padding: 0 14px;
+  background: linear-gradient(to right, @orange, @amber);
+  color: @bg;
+  font-weight: 800;
+  box-shadow: 0 0 12px alpha(@orange, 0.45);
+}
+
+#workspaces button.urgent {
+  background: @danger;
+  color: @bg;
+}
+
+/* ---------- Clock (center, the one loud element) ---------- */
+
+#clock {
+  background: mix(@surface, @amber, 0.10);
+  border: 1px solid mix(@surface, @amber, 0.35);
+  color: @amber;
+  font-weight: 800;
+  padding: 0 20px;
+}
+
+#clock:hover {
+  border-color: @amber;
+}
+
+/* ---------- Submap ---------- */
+
+#submap {
+  background: @amber;
+  border: 1px solid @amber;
+  color: @bg;
+  font-weight: 800;
+}
+
+/* ---------- Tray ---------- */
+
+/* No pill: the tray module stays visible when it has no icons, so a styled box would show up empty. */
+#tray {
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0 4px;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
+
+/* ---------- System stats (warm) ---------- */
+
+#cpu {
+  background: mix(@surface, @orange, 0.12);
+  border: 1px solid mix(@surface, @orange, 0.35);
+  color: @orange;
+}
+
+#cpu:hover {
+  border-color: @orange;
+}
+
+#memory {
+  background: mix(@surface, @gold, 0.10);
+  border: 1px solid mix(@surface, @gold, 0.32);
+  color: @gold;
+}
+
+#memory:hover {
+  border-color: @gold;
+}
+
+/* Threshold states from the config ("warning" 70%, "critical" 90%). */
+#cpu.warning,
+#memory.warning {
+  border-color: mix(@surface, @danger, 0.6);
+}
+
+@keyframes pulse {
+  to {
+    background-color: mix(@surface, @danger, 0.45);
+  }
+}
+
+#cpu.critical,
+#memory.critical {
+  color: @danger;
+  border-color: @danger;
+  animation-name: pulse;
+  animation-duration: 0.8s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* ---------- Volume (rose) ---------- */
+
+#volume {
+  background: mix(@surface, @rose, 0.11);
+  border: 1px solid mix(@surface, @rose, 0.33);
+}
+
+#volume:hover {
+  border-color: @rose;
+}
+
+#pulseaudio {
+  color: @rose;
+}
+
+#pulseaudio.muted {
+  color: @muted;
+}
+
+#pulseaudio-slider {
+  padding: 0;
+  margin: 0 0 0 8px;
+}
+
+#pulseaudio-slider slider {
+  all: unset;
+  min-height: 0;
+  min-width: 0;
+  opacity: 0;
+  background-image: none;
+  border: none;
+  box-shadow: none;
+}
+
+#pulseaudio-slider trough {
+  min-height: 6px;
+  min-width: 80px;
+  border-radius: 4px;
+  background: @surface-hi;
+}
+
+#pulseaudio-slider highlight {
+  min-width: 10px;
+  border-radius: 4px;
+  background: linear-gradient(to right, @rose, @amber);
+}
+
+/* ---------- Connectivity (cool) ---------- */
+
+#bluetooth {
+  background: mix(@surface, @blue, 0.11);
+  border: 1px solid mix(@surface, @blue, 0.35);
+  color: @blue;
+  padding: 0 12px;
+}
+
+#bluetooth:hover {
+  border-color: @blue;
+}
+
+#bluetooth.connected {
+  box-shadow: 0 0 10px alpha(@blue, 0.35);
+}
+
+#bluetooth.off,
+#bluetooth.disabled {
+  background: @surface;
+  border-color: @line;
+  color: @muted;
+}
+
+#network {
+  background: mix(@surface, @mint, 0.10);
+  border: 1px solid mix(@surface, @mint, 0.32);
+  color: @mint;
+  padding: 0 12px;
+}
+
+#network:hover {
+  border-color: @mint;
+}
+
+#network.disconnected {
+  background: mix(@surface, @danger, 0.14);
+  border-color: mix(@surface, @danger, 0.5);
+  color: @danger;
+}
+
+/* ---------- Battery (only if you re-enable it in the config) ---------- */
+
+#battery {
+  background: mix(@surface, @mint, 0.10);
+  border: 1px solid mix(@surface, @mint, 0.32);
+  border-radius: 13px;
+  color: @mint;
+  margin: 3px 3px;
+  padding: 0 14px;
+}
+
+#battery.charging,
+#battery.plugged {
+  color: @gold;
+}
+
+#battery.warning:not(.charging) {
+  color: @amber;
+}
+
+#battery.critical:not(.charging) {
+  color: @danger;
+  border-color: @danger;
+}
+
+/* ---------- Media ----------
+   The group has no padding or border (the outline is an inset shadow); each child carries its own padding.
+   When nothing is playing the children hide and the pill collapses to nothing.
+   Equalizer bar colors and the progress bar colors come from the scripts (Pango markup). */
+
+#media {
+  background: linear-gradient(to right, mix(@surface, @orange, 0.16), mix(@surface, @rose, 0.10));
+  box-shadow: inset 0 0 0 1px mix(@surface, @orange, 0.35);
+  padding: 0;
+}
+
+#media:hover {
+  box-shadow: inset 0 0 0 1px @orange, 0 0 12px alpha(@orange, 0.25);
+}
+
+#custom-media-animation {
+  font-size: 14px;
+  padding: 0 6px 0 14px;
+}
+
+/* min-width keeps the pill the same size for short titles; zscroll's -l sets the maximum. */
+#custom-media-now-playing {
+  color: @text;
+  font-weight: 700;
+  min-width: 240px;
+  padding: 0 10px;
+}
+
+#custom-media-time {
+  color: @muted;
+  font-size: 13px;
+  padding: 0 14px 0 6px;
+}
+
+/* ---------- Tooltips ---------- */
+
+tooltip {
+  background: @surface;
+  border: 1px solid alpha(@orange, 0.6);
+  border-radius: 10px;
+}
+
+tooltip label {
+  color: @text;
+  padding: 2px 4px;
+}

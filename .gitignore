@@ -1,0 +1,8 @@
+*.log
+*~
+*.bak
+.zsh_history
+zsh_history
+.zcompdump*
+secrets.zsh
+tmux/.config/tmux/plugins/

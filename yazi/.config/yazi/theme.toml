@@ -1,0 +1,20 @@
+[flavor]
+dark  = "claude-inspired"
+light = "claude-inspired"
+
+[git]
+unknown_sign   = " "
+ignored_sign   = "!"
+untracked_sign = "?"
+unstaged_sign  = "M"
+staged_sign    = "S"
+added_sign     = "A"
+deleted_sign   = "D"
+updated_sign   = "U"
+clean_sign     = ""
+
+unstaged  = { fg = "yellow" }
+untracked = { fg = "gray" }
+added     = { fg = "green" }
+staged    = { fg = "green" }
+deleted   = { fg = "red", bold = true }

@@ -1,0 +1,176 @@
+{
+    "layer": "top",
+    "position": "top",
+
+    "height": 38,
+
+    "reload_style_on_change": true,
+
+    // Layout: [ workspaces + now playing ]  [ clock ]  [ stats | audio | connectivity ]
+    "modules-left": ["hyprland/workspaces", "group/media"],
+    "modules-center": ["clock"],
+    "modules-right": [
+        "hyprland/submap",
+        "tray",
+        "cpu",
+        "memory",
+        // "battery",
+        "group/volume",
+        "bluetooth",
+        "network"
+    ],
+
+    // Icons are Nerd Font codepoints written as \u escapes.
+    // Codepoints above U+FFFF (the Material Design set) need a surrogate pair in JSON.
+
+    "hyprland/workspaces": {
+        "format": "{name}"
+    },
+
+    "hyprland/submap": {
+        "format": "{}",
+        "tooltip": false
+    },
+
+    "clock": {
+        // \uf017 = clock. Keep exactly one {:...} placeholder: the module passes a single time argument.
+        "format": "\uf017  {:%a, %d %b   %I:%M %p}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "format": {
+                "months": "<span color='#ece8e3'><b>{}</b></span>",
+                "weekdays": "<span color='#ffa63d'><b>{}</b></span>",
+                "today": "<span color='#ff6a00'><b>{}</b></span>"
+            }
+        },
+        "on-click": "google-chrome-stable --app=https://calendar.google.com"
+    },
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    },
+
+    "cpu": {
+        // \uf2db = microchip
+        "interval": 5,
+        "format": "\uf2db  {usage}%",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "on-click": "exec ghostty --title=btop -e btop"
+    },
+
+    "memory": {
+        // \udb80\udf5b = U+F035B, nf-md-memory.
+        // The old \uf538 is a Font Awesome 5 glyph that Nerd Fonts doesn't ship at that slot, so it rendered as a box.
+        // If this still shows a box, your Nerd Font is older than v3: paste any memory glyph directly instead.
+        "interval": 30,
+        "format": "\udb80\udf5b  {percentage}%",
+        "tooltip-format": "{used:0.1f}G/{total:0.1f}G used",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "on-click": "exec ghostty --title=htop -e htop"
+    },
+
+    "battery": {
+        // \uf244..\uf240 = battery empty..full, \uf0e7 = bolt, \uf1e6 = plug
+        "interval": 30,
+        "states": {
+            "warning": 25,
+            "critical": 10
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "\uf0e7  {capacity}%",
+        "format-plugged": "\uf1e6  {capacity}%",
+        "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
+    },
+
+    // Volume: the slider is hidden until you hover the percentage.
+    // Delete the "drawer" block to show it permanently.
+    "group/volume": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 300,
+            "transition-left-to-right": true
+        },
+        "modules": ["pulseaudio", "pulseaudio/slider"]
+    },
+
+    "pulseaudio": {
+        // \uf026 = volume off, \uf027 = volume down, \uf028 = volume up
+        "format": "{icon}  {volume}%",
+        "format-muted": "\uf026  muted",
+        "format-icons": {
+            "default": ["\uf027", "\uf028"]
+        },
+        "scroll-step": 1,
+        "ignored-sinks": ["Easy Effects Sink"],
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "pulseaudio/slider": {
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal"
+    },
+
+    "bluetooth": {
+        // \uf293 = bluetooth. An empty format hides the module.
+        "format": "\uf293",
+        "format-disabled": "",
+        "format-connected": "\uf293  {num_connections}",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "on-click": "exec ghostty --title=bluetui -e bluetui"
+    },
+
+    "network": {
+        // \uf1eb = wifi, \uf0e8 = ethernet (sitemap), \uf071 = disconnected (warning)
+        "format": "\uf0e8",
+        "format-wifi": "\uf1eb",
+        "format-ethernet": "\uf0e8",
+        "format-disconnected": "\uf071",
+        "tooltip-format": "{ifname} via {gwaddr}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 50,
+        "on-click": "exec nmrs"
+    },
+
+    // Now playing (left side): modules and scripts unchanged, only moved.
+    "group/media": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/media-animation",
+            "custom/media-now-playing",
+            "custom/media-time"
+        ]
+    },
+
+    "custom/media-now-playing": {
+        "exec": "~/.config/waybar/custom_modules/media/media-now-playing.sh",
+        "escape": true,
+        "tooltip": false,
+        "on-click": "playerctl play-pause",
+        "on-click-middle": "playerctl previous",
+        "on-click-right": "playerctl next"
+    },
+
+    "custom/media-animation": {
+        "exec": "~/.config/waybar/custom_modules/media/media-animation.sh",
+        "tooltip": false
+    },
+
+    "custom/media-time": {
+        "exec": "~/.config/waybar/custom_modules/media/media-time.sh",
+        "interval": 1,
+        "tooltip": false
+    }
+}
