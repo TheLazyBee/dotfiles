@@ -40,6 +40,7 @@ local notion = browser
 	.. " --new-window https://app.notion.com/p/3a27b4d4292381ec9de6f44fdbef2c34?v=e917b4d42923824ba7a0889375a571c2&pvs=9 "
 local launcher = "rofi -show drun -show-icons"
 local runner = "rofi -show run"
+local vscode = "code"
 
 -------------------
 ---- AUTOSTART ----
@@ -281,6 +282,7 @@ hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(notion))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(music))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(launcher))
 hl.bind(secondMod .. " + R", hl.dsp.exec_cmd(runner))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(vscode))
 
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 
